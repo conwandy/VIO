@@ -1,0 +1,25 @@
+speed_breakout_route = {
+    '4 SPEEDS': [4, 'AUTO_4_SPEED_PCT'],
+    '5 SPEEDS': [5, 'AUTO_5_SPEED_PCT'],
+    '6 SPEEDS': [6, 'AUTO_6_SPEED_PCT'],
+    '6_7 SPEEDS': [6, 'AUTO_6_7_SPEED_PCT'],
+    '8 SPEEDS': [8, 'AUTO_8_SPEED_PCT'],
+    '7_8 SPEEDS': [8, 'AUTO_7_8_SPEED_PCT'],
+    '10 SPEEDS': [10, 'AUTO_10_SPEED_PCT'],
+    'CVTs': ['CVT', 'CVT_PCT']
+}
+
+
+def get_speed_breakout_df(df, speed_route, vio_year):
+    duplicated_rows = pd.DataFrame(columns=df.columns)
+    for i, row in df.iterrows():
+        for key, value in speed_route.items():
+            if row[key] > 0:
+                num_speeds = value[0]
+                speed_pct_header = value[1]
+                new_row = get_speed_breakout_row(row, num_speeds, speed_pct_header, vio_year)
+                duplicated_rows = pd.concat([duplicated_rows, new_row.to_frame().T], ignore_index=True)
+    return duplicated_rows
+
+
+speed_breakout_df = get_speed_breakout_df(df, speed_breakout_route, file_year)
